@@ -118,7 +118,7 @@ int main(void)
 				syscnt = 4;
 				break;
 			case 4:
-//				Boradcast_Glider_Parameter();
+				Boradcast_Glider_Parameter();
 				syscnt = 0;
 				break;
 		}
