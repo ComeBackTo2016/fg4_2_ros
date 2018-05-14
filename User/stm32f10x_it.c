@@ -273,7 +273,7 @@ void TIM2_IRQHandler()
 返 回 值:无
 作    者:何宇帆(2016-01-25)
 **************************************************************************/
-extern uint8_t RaspiRec[64];
+extern uint8_t RaspiRec[128];
 extern Fifo4Serial QueueOfUart1Rec;
 extern uint8_t uart1sendflag;
 
@@ -316,16 +316,41 @@ void DMA1_Channel4_IRQHandler(void)
 返 回 值:无
 作    者:何宇帆(2016-01-26)
 **************************************************************************/
+extern Fifo4Serial QueueOfUart2Rec;
+extern uint8_t ROSRec[128];
+extern uint8_t uart2sendflag;
 void USART2_IRQHandler(void)
 {
-	uint8_t ch;
-	
-	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
-	{ 	
-		ch = USART_ReceiveData(USART2);
-		/* C++上位机\raspi通信通用协议代码段 */
+		uint16_t temp = 0;
+		uint32_t IMASK = 0;
+		uint8_t i = 0;
 
-	} 
+    if(USART_GetITStatus(USART2, USART_IT_IDLE) != RESET)  
+    {  
+				/* 清除串口1空闲中断 */
+        IMASK = USART2->SR;  
+        IMASK = USART2->DR;  
+		DMA_Cmd(DMA1_Channel6,DISABLE);  
+        temp = RASPIBUFFERLEN - DMA_GetCurrDataCounter(DMA1_Channel6);  
+				/*----------User Code-------------*/
+		for (i = 0; i < temp; i++)
+		{
+			QueueIn(&QueueOfUart2Rec, ROSRec[i]);
+		}
+				/*--------------------------------*/
+        DMA_SetCurrDataCounter(DMA1_Channel6, RASPIBUFFERLEN);  
+        DMA_Cmd(DMA1_Channel6,ENABLE);  
+    }
+}
+void DMA1_Channel6_IRQHandler(void)
+{    
+   if(DMA_GetFlagStatus(DMA1_FLAG_TC6)==SET) 
+   {  
+			DMA_Cmd(DMA1_Channel6, DISABLE);
+			DMA_SetCurrDataCounter(DMA1_Channel6, 0); 
+			uart2sendflag = 0;
+			DMA_ClearFlag(DMA1_FLAG_TC6); 
+    }    
 }
 extern uint8_t RS485Rec[RS485BUFFERLEN];
 extern Fifo4Serial QueueOfUart4Rec;

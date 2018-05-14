@@ -16,16 +16,23 @@ void NVIC_of_All(void)
 		UART5_NVIC_Config(0, 1);
 		UART1_NVIC_Config(0, 2);
 		UART4_NVIC_Config(0, 3);
-		Timer4_NVIC_Config(1, 0);
+		Timer4_NVIC_Config(1, 4);
+		DMA1ch7_NVIC_Config(1, 0);
 		Timer5_NVIC_Config(1, 1);
 		DMA1ch4_NVIC_Config(1, 2);
 		DMA2ch5_NVIC_Config(1, 3);
+		DMA1ch7_NVIC_Config(0, 0);
 }
+//void ROS_Uart_Init(void);
+//void ROS_DMA_Init(void);
+//void DMA1ch7_NVIC_Config(unsigned char PreemptionPriority, unsigned char SubPriority);
+//void ROS_DMA_Send(DMA_Channel_TypeDef*DMA_CHx, void* buffer, int16_t buffersize);
 
 void UART_INIT(void)				
 {
 //		/* 2.4G无线模块 波特率 9600 */
 		UART5_PC12_PD02_Config();
+		
 //		/* 485总线 波特率 115200 */
 		UART4_PC10_PC11_Config();
 //		/* Raspi通信 波特率 115200 */
@@ -34,6 +41,8 @@ void UART_INIT(void)
 		Raspi_Uart_Init();
 		RS485_Uart_Init();
 		RS485_DMA_Init();
+		ROS_Uart_Init();
+		ROS_DMA_Init();
 		
 		QueueInit(&QueueOfUart1Rec);
 		QueueInit(&QueueOfUart4Rec);

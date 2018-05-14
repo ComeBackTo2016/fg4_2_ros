@@ -20,6 +20,7 @@ void Raspi_Uart_Init(void);
 void Raspi_DMA_Init(void);
 void Raspi_DMA_Send(DMA_Channel_TypeDef*DMA_CHx, void* buffer, int16_t buffersize);
 void DMA1ch4_NVIC_Config(unsigned char PreemptionPriority, unsigned char SubPriority);
+
 void RS485_Uart_Init(void);
 void RS485_DMA_Init(void);
 void DMA2ch5_NVIC_Config(unsigned char PreemptionPriority, unsigned char SubPriority);
@@ -30,4 +31,9 @@ void RS485_Data_Send(uint32_t flag);
 void RS485_Data_Process(uint8_t length);
 void EC_TEData_Send(void);
 void IMU_PRYData_Send(void);
+
+void ROS_Uart_Init(void);
+void ROS_DMA_Init(void);
+void DMA1ch7_NVIC_Config(unsigned char PreemptionPriority, unsigned char SubPriority);
+void ROS_DMA_Send(DMA_Channel_TypeDef*DMA_CHx, void* buffer, int16_t buffersize);
 #endif 

@@ -8,7 +8,7 @@
 **********************************************/
 Fifo4Serial QueueOfUart1Rec;
 Fifo4Serial QueueOfUart4Rec;
-Fifo4Serial QueueOfUart5Rec;
+Fifo4Serial QueueOfUart2Rec;
 /**********************************************
 函数功能：队列初始化
 输入：无

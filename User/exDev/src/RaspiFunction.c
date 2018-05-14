@@ -180,6 +180,7 @@ extern float BatIV[2];
 extern float IRData[3];
 float RaspiDataSend[13] = {0};
 uint8_t uart1sendflag = 1;
+uint8_t uart2sendflag = 1;
 uint8_t uart4sendflag = 1;
 extern float DistanceIR;
 extern uint8_t OperateMode;
@@ -442,7 +443,7 @@ void Boradcast_Glider_Parameter(void)
 	uint8_t i = 0, j = 0, temp8 = 0;
 	
 	cnt++;
-	if (cnt >= 200)
+	if (cnt >= 600)
 	{
 		cnt = 0;
 		databuf[i] = 0x13;
@@ -489,13 +490,6 @@ void Boradcast_Glider_Parameter(void)
 		sendbuf[1] = 0xac;
 		memcpy(&sendbuf[2], &databuf[0], i + 2);
 		sendbuf[i + 3] = 0xcc;// index = i + 1 + 2
-		Raspi_DMA_Send(DMA1_Channel4, &sendbuf, i + 4);
+		ROS_DMA_Send(DMA1_Channel6, &sendbuf, i + 4);
 	}
-//	UART5_SendByte(0xca);
-//	UART5_SendByte(0xac);
-//	for (j = 0; j <= i; j++)
-//	{
-//		UART5_SendByte(databuf[j]);
-//	}
-//	UART5_SendByte(0xcc);
 }
