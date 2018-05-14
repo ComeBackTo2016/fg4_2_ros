@@ -4,6 +4,7 @@
 
 extern Fifo4Serial QueueOfUart1Rec;
 extern Fifo4Serial QueueOfUart4Rec;
+extern Fifo4Serial QueueOfUart2Rec;
 
 static void IIC2_NVIC_Config(unsigned char Pre_EV, unsigned char Pre_ER);
 
@@ -32,7 +33,6 @@ void UART_INIT(void)
 {
 //		/* 2.4G无线模块 波特率 9600 */
 		UART5_PC12_PD02_Config();
-		
 //		/* 485总线 波特率 115200 */
 		UART4_PC10_PC11_Config();
 //		/* Raspi通信 波特率 115200 */
@@ -46,9 +46,10 @@ void UART_INIT(void)
 		
 		QueueInit(&QueueOfUart1Rec);
 		QueueInit(&QueueOfUart4Rec);
+		QueueInit(&QueueOfUart2Rec);
 }
 
-void PWM_INIT(void)					
+void PWM_INIT(void)
 {
 	  /* 水泵直流电机控制信号 ch = 1,2 F = 8K PWM：0~1000 */
     TIM8_PWM_PC6_PC7_PC8_PC9_Config(1000, 9);
