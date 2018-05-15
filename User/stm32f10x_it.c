@@ -288,13 +288,13 @@ void USART1_IRQHandler(void)
 				/* Çå³ý´®¿Ú1¿ÕÏÐÖÐ¶Ï */
         IMASK = USART1->SR;  
         IMASK = USART1->DR;  
-		DMA_Cmd(DMA1_Channel5,DISABLE);  
+				DMA_Cmd(DMA1_Channel5,DISABLE);  
         temp = RASPIBUFFERLEN - DMA_GetCurrDataCounter(DMA1_Channel5);  
 				/*----------User Code-------------*/
-		for (i = 0; i < temp; i++)
-		{
-			QueueIn(&QueueOfUart1Rec, RaspiRec[i]);
-		}
+				for (i = 0; i < temp; i++)
+				{
+					QueueIn(&QueueOfUart1Rec, RaspiRec[i]);
+				}
 				/*--------------------------------*/
         DMA_SetCurrDataCounter(DMA1_Channel5, RASPIBUFFERLEN);  
         DMA_Cmd(DMA1_Channel5,ENABLE);  
@@ -321,7 +321,7 @@ extern uint8_t ROSRec[128];
 extern uint8_t uart2sendflag;
 void USART2_IRQHandler(void)
 {
-		uint16_t temp = 0;
+		static uint16_t temp = 0;
 		uint32_t IMASK = 0;
 		uint8_t i = 0;
 

@@ -17,6 +17,7 @@ void NVIC_of_All(void)
 		UART5_NVIC_Config(0, 1);
 		UART1_NVIC_Config(0, 2);
 		UART4_NVIC_Config(0, 3);
+		UART2_NVIC_Config(0, 4);
 		Timer4_NVIC_Config(1, 4);
 		DMA1ch7_NVIC_Config(1, 0);
 		Timer5_NVIC_Config(1, 1);

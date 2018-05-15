@@ -1050,7 +1050,7 @@ uint8_t XORCheck_ROS(void)
 		return 0;
 	}
 }
-
+uint8_t watch_data2 = 0x00;
 uint8_t FrameGet_ROS(uint8_t data)
 {
 	uint8_t i;
@@ -1080,12 +1080,13 @@ uint8_t FrameGet_ROS(uint8_t data)
 		rec_data_ROS[rec_index_ROS] = data;
 		rec_flag_ROS &= ~FRAME_HEAD_FLAG_ROS;
 		rec_index_ROS++;
-
+		watch_data2 = 0x04;
 		if (rec_index_ROS == rec_data_ROS[2])
 		{
-
+			watch_data2 = 0x01;
 			if (rec_data_ROS[rec_index_ROS-1] == FRAME_BYTE_LST_ROS)
 			{
+				watch_data2 = 0x02;
 				rec_flag_ROS |= FRAME_OVER_FLAG_ROS;
 				/************************/	
 				if (XORCheck_ROS())
@@ -1110,6 +1111,7 @@ uint8_t FrameGet_ROS(uint8_t data)
 }
 
 extern Fifo4Serial QueueOfUart2Rec;
+uint8_t watch_data = 0x00;
 void ROSDataProcess(void)
 {
 	uint8_t id_temp = 0;
@@ -1121,11 +1123,14 @@ void ROSDataProcess(void)
 	}f2b;
 	if (QueueOut(&QueueOfUart2Rec, &temp) == QUEUE_OK)
 	{
+		watch_data = 0x01;
 		switch (FrameGet_ROS(temp))
 		{
 			case 0x37:
+					watch_data = 0x02;
 					if (rec_data_ROS[3] == 0x00)
 					{
+						watch_data = 0x03;
 						memcpy(&frame_ros_glider, &rec_data_ROS[4], 10);
 					}
 				break;
