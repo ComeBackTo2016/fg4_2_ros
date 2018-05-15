@@ -1107,9 +1107,10 @@ void ROSDataProcess(uint8_t data)
 	id_temp = FrameGet_ROS(data);
 	if (id_temp == 0x37)
 	{
-		/* 数据ID:  */
+		/* 数据ID:rec_data_ROS[3]= {case: 0x00=glider, case:0x01=push, case:0x02=sensor }  */
 		if (rec_data_ROS[3] == 0x00)
 		{
+			
 		}
 
 	}
