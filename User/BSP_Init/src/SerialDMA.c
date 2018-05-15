@@ -202,7 +202,7 @@ void DMA1ch7_NVIC_Config(unsigned char PreemptionPriority, unsigned char SubPrio
 void ROS_DMA_Send(DMA_Channel_TypeDef*DMA_CHx, void* buffer, int16_t buffersize)
 { 
 	while (DMA_GetCurrDataCounter(DMA1_Channel7));
-	if(buffer) memcpy(RaspiSend, buffer, (buffersize > RASPIBUFFERLEN ? RASPIBUFFERLEN : buffersize));
+	if(buffer) memcpy(ROSSend, buffer, (buffersize > RASPIBUFFERLEN ? RASPIBUFFERLEN : buffersize));
 	DMA_Cmd(DMA_CHx, DISABLE ); 
  	DMA_SetCurrDataCounter(DMA1_Channel7, buffersize);
  	DMA_Cmd(DMA_CHx, ENABLE);  

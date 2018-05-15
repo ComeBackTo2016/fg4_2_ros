@@ -110,7 +110,7 @@ int main(void)
 				syscnt = 3;
 				break;
 			case 3:
-//					/* 深度传感器数据获取 */
+				/* 深度传感器数据获取 */
 				if(MS5837_STATE == 1)
 				{
 					MS5837_read(); // Run time: 600us

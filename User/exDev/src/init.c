@@ -24,10 +24,6 @@ void NVIC_of_All(void)
 		DMA2ch5_NVIC_Config(1, 3);
 		DMA1ch7_NVIC_Config(0, 0);
 }
-//void ROS_Uart_Init(void);
-//void ROS_DMA_Init(void);
-//void DMA1ch7_NVIC_Config(unsigned char PreemptionPriority, unsigned char SubPriority);
-//void ROS_DMA_Send(DMA_Channel_TypeDef*DMA_CHx, void* buffer, int16_t buffersize);
 
 void UART_INIT(void)				
 {

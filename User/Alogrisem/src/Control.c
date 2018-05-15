@@ -1002,6 +1002,124 @@ void GetPoseJY901Init(float times)
 //	printf("The Init Pitch: %.2f, Roll: %.2f Yaw: %.2f \n", AngInit[0], AngInit[1], AngInit[2]);
 }
 
+
+/* **************************************ROS serial port data rec************************************** */
+#define FRAME_BYTE_FST_ROS 0xca
+#define FRAME_BYTE_SEC_ROS 0xac
+#define FRAME_BYTE_LST_ROS 0xcc
+#define FRAME_HEAD_FLAG_ROS 0x01
+#define FRAME_OVER_FLAG_ROS 0x02
+#define BUFFER_SIZE_ROS 64
+
+uint8_t rec_data_ROS[BUFFER_SIZE_ROS];
+uint8_t rec_index_ROS = 0x00;
+uint8_t rec_flag_ROS = 0x00;
+
+uint8_t SumCheck_ROS(void);
+uint8_t XORCheck_ROS(void);
+
+uint8_t XORCheck_ROS(void)
+{
+	uint8_t i = 0;
+	uint16_t xor_byte = 0x00;
+	xor_byte = rec_data_ROS[0];
+	for (i = 1; i < rec_data_ROS[2] - 2; i++)
+	{
+		xor_byte ^= rec_data_ROS[i];
+	}
+
+	if ((xor_byte & 0xff) == rec_data_ROS[rec_data_ROS[2] - 2])
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+uint8_t FrameGet_ROS(uint8_t data)
+{
+	uint8_t i;
+
+	if (data == FRAME_BYTE_FST_ROS)
+	{
+		rec_flag_ROS = rec_flag_ROS | FRAME_HEAD_FLAG_ROS;
+		rec_data_ROS[rec_index_ROS] = data;
+		rec_index_ROS++;
+	}
+	else if (data == FRAME_BYTE_SEC_ROS)
+	{
+		if (rec_flag_ROS & FRAME_HEAD_FLAG_ROS)
+		{
+			rec_flag_ROS = rec_flag_ROS & ~FRAME_OVER_FLAG_ROS;
+			rec_index_ROS = 0;
+		}
+		else
+		{
+			rec_data_ROS[rec_index_ROS] = data;
+			rec_index_ROS++;
+			rec_flag_ROS = rec_flag_ROS & ~FRAME_HEAD_FLAG_ROS;
+		}
+	}
+	else
+	{
+		rec_data_ROS[rec_index_ROS] = data;
+		rec_flag_ROS &= ~FRAME_HEAD_FLAG_ROS;
+		rec_index_ROS++;
+
+		if (rec_index_ROS == rec_data_ROS[2])
+		{
+
+			if (rec_data_ROS[rec_index_ROS-1] == FRAME_BYTE_LST_ROS)
+			{
+				rec_flag_ROS |= FRAME_OVER_FLAG_ROS;
+				/************************/	
+				if (XORCheck_ROS())
+				{
+					return rec_data_ROS[1];
+				}
+				else
+				{
+					return 0x01;
+				}
+				/************************/	
+			}
+		}
+		else if(rec_index_ROS == BUFFER_SIZE_ROS)
+		{
+			rec_index_ROS--;
+			return 0x01;
+		}
+		else
+		{return 0x01;}
+	}
+}
+
+void ROSDataProcess(uint8_t data)
+{
+	uint8_t id_temp = 0;
+	union float2byte
+	{
+		float f;
+		uint8_t b[4];
+	}f2b;
+	id_temp = FrameGet_ROS(data);
+	if (id_temp == 0x37)
+	{
+		/* 数据ID:  */
+		if (rec_data_ROS[3] == 0x00)
+		{
+		}
+
+	}
+	else if (id_temp == 0x01)
+	{
+		
+	}
+	else
+	{}
+}
 /***************************************************传感器数据串口发送至上位机***************************************/
 unsigned short CRC_CHECK(unsigned char *Buf, unsigned char CRC_CNT)
 {
@@ -1054,4 +1172,3 @@ void OutPut_Data(void)
 
 /********************************************************************************************************************/
 
-	

@@ -330,26 +330,26 @@ void USART2_IRQHandler(void)
 				/* Çå³ý´®¿Ú1¿ÕÏÐÖÐ¶Ï */
         IMASK = USART2->SR;  
         IMASK = USART2->DR;  
-		DMA_Cmd(DMA1_Channel6,DISABLE);  
+				DMA_Cmd(DMA1_Channel6,DISABLE);  
         temp = RASPIBUFFERLEN - DMA_GetCurrDataCounter(DMA1_Channel6);  
 				/*----------User Code-------------*/
-		for (i = 0; i < temp; i++)
-		{
-			QueueIn(&QueueOfUart2Rec, ROSRec[i]);
-		}
+				for (i = 0; i < temp; i++)
+				{
+					QueueIn(&QueueOfUart2Rec, ROSRec[i]);
+				}
 				/*--------------------------------*/
         DMA_SetCurrDataCounter(DMA1_Channel6, RASPIBUFFERLEN);  
         DMA_Cmd(DMA1_Channel6,ENABLE);  
     }
 }
-void DMA1_Channel6_IRQHandler(void)
+void DMA1_Channel7_IRQHandler(void)
 {    
-   if(DMA_GetFlagStatus(DMA1_FLAG_TC6)==SET) 
+   if(DMA_GetFlagStatus(DMA1_FLAG_TC7)==SET) 
    {  
-			DMA_Cmd(DMA1_Channel6, DISABLE);
-			DMA_SetCurrDataCounter(DMA1_Channel6, 0); 
+			DMA_Cmd(DMA1_Channel7, DISABLE);
+			DMA_SetCurrDataCounter(DMA1_Channel7, 0); 
 			uart2sendflag = 0;
-			DMA_ClearFlag(DMA1_FLAG_TC6); 
+			DMA_ClearFlag(DMA1_FLAG_TC7); 
     }    
 }
 extern uint8_t RS485Rec[RS485BUFFERLEN];
