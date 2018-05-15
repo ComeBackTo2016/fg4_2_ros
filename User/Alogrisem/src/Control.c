@@ -981,7 +981,6 @@ void GetPoseJY901(void)
 		Angle[0] = (float)CharToShort(&chrTemp[0])/32768*180 - AngInit[0];
 		Angle[1] = (float)CharToShort(&chrTemp[2])/32768*180 - AngInit[1];//俯仰角
 		Angle[2] = (float)CharToShort(&chrTemp[4])/32768*180 - AngInit[2];//俯仰角
-//		printf("The Pitch: %.2f, IRL:%.2f ST:%d \n", Angle[0], DistanceIR, TIM2->CNT);
 	}
 }
 
@@ -999,7 +998,6 @@ void GetPoseJY901Init(float times)
 	AngInit[0] = temp[0] / times;
 	AngInit[1] = temp[0] / times;
 	AngInit[2] = temp[0] / times;
-//	printf("The Init Pitch: %.2f, Roll: %.2f Yaw: %.2f \n", AngInit[0], AngInit[1], AngInit[2]);
 }
 
 
@@ -1010,6 +1008,21 @@ void GetPoseJY901Init(float times)
 #define FRAME_HEAD_FLAG_ROS 0x01
 #define FRAME_OVER_FLAG_ROS 0x02
 #define BUFFER_SIZE_ROS 64
+
+//int16 act_boom_posi
+//int16 act_st_posi
+//int16 act_st_vel
+//int16 act_boom_vel_max
+//int16 act_boom_deadzone
+
+typedef struct{
+	int16_t act_boom_posi;
+	int16_t act_st_posi;
+	int16_t act_st_vel;
+	int16_t act_boom_vel_max;
+	int16_t act_boom_deadzone;
+}FrameROS_Glider;
+FrameROS_Glider frame_ros_glider;
 
 uint8_t rec_data_ROS[BUFFER_SIZE_ROS];
 uint8_t rec_index_ROS = 0x00;
@@ -1096,30 +1109,31 @@ uint8_t FrameGet_ROS(uint8_t data)
 	}
 }
 
-void ROSDataProcess(uint8_t data)
+extern Fifo4Serial QueueOfUart2Rec;
+void ROSDataProcess(void)
 {
 	uint8_t id_temp = 0;
+	int8_t temp = 0;
 	union float2byte
 	{
 		float f;
 		uint8_t b[4];
 	}f2b;
-	id_temp = FrameGet_ROS(data);
-	if (id_temp == 0x37)
+	if (QueueOut(&QueueOfUart2Rec, &temp) == QUEUE_OK)
 	{
-		/* 数据ID:rec_data_ROS[3]= {case: 0x00=glider, case:0x01=push, case:0x02=sensor }  */
-		if (rec_data_ROS[3] == 0x00)
+		switch (FrameGet_ROS(temp))
 		{
-			
+			case 0x37:
+					if (rec_data_ROS[3] == 0x00)
+					{
+						memcpy(&frame_ros_glider, &rec_data_ROS[4], 10);
+					}
+				break;
+			case 0x01:
+				
+				break;
 		}
-
 	}
-	else if (id_temp == 0x01)
-	{
-		
-	}
-	else
-	{}
 }
 /***************************************************传感器数据串口发送至上位机***************************************/
 unsigned short CRC_CHECK(unsigned char *Buf, unsigned char CRC_CNT)

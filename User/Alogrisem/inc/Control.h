@@ -64,5 +64,6 @@ void FrameCharGet(unsigned char data);
 uint8_t FrameGet_360(uint8_t data);
 void GetPoseJY901Init(float times);
 void Xbox360DataProcess(uint8_t data);
+void ROSDataProcess(void);
 void OutPut_Data(void);
 #endif

@@ -79,6 +79,7 @@ int main(void)
     while (1)
     { 
 		Raspi_Data_Process(); // Run time: 8us
+		ROSDataProcess();
 		switch (syscnt)
 		{
 			case 0:
